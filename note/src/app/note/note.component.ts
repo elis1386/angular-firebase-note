@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Note } from '../note';
 import { NoteService } from '../note.service';
+import { NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'app-note',
@@ -11,14 +12,18 @@ import { NoteService } from '../note.service';
 export class NoteComponent implements OnInit {
   noteForm!: FormGroup;
   editForm!: FormGroup;
-  notes: any = []
-  noteObj: Note = 
-  {
+  notes: any = [];
+  noteDetails: any
+  noteObj: Note = {
     id: '',
     note_title: '',
-    note_description: ''
-  }
-  constructor(private note_service: NoteService, private formBuilder: FormBuilder) {
+    note_description: '',
+  };
+  constructor(
+    private note_service: NoteService,
+    private formBuilder: FormBuilder,
+    private spinner: NgxSpinnerService,
+  ) {
     this.noteForm = this.formBuilder.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
@@ -28,47 +33,54 @@ export class NoteComponent implements OnInit {
       edited_description: ['', Validators.required],
     });
   }
-  ngOnInit(){
-    this.getAllNotes()
+  ngOnInit() {
+    this.getAllNotes();
   }
 
-  addNote()
-  {
-    const {value} = this.noteForm
+  addNote() {
+    const { value } = this.noteForm;
     console.log(value);
-    
-    this.noteObj.id = ''
-    this.noteObj.note_title = value.title
-    this.noteObj.note_description = value.description 
 
-    this.note_service.addNote(this.noteObj).then((note) =>{
-      if(note)
-      {
-        alert('Note added successfully')
-        this.noteForm.reset()
+    this.noteObj.id = '';
+    this.noteObj.note_title = value.title;
+    this.noteObj.note_description = value.description;
+
+    this.note_service.addNote(this.noteObj).then((note) => {
+      if (note) {
+        alert('Note added successfully');
+        this.noteForm.reset();
       }
-    })
+    });
   }
 
-  getAllNotes()
-  {
-    this.note_service.getNotes().subscribe((res: Note[])=>{
+  getAllNotes() {
+    this.spinner.show()
+    this.note_service.getNotes().subscribe((res: Note[]) => {
       console.log(res);
-      this.notes = res
-    })
+      this.notes = res;
+      this.spinner.hide()
+    });
   }
-  deleteNote(note: Note)
-  {
-    let decision = confirm('Are you really want to delete this note?')
-    if(decision === true)
-    {
-      this.note_service.deleteNote(note)
+  deleteNote(note: Note) {
+    let decision = confirm('Are you really want to delete this note?');
+    if (decision === true) {
+      this.note_service.deleteNote(note);
     }
   }
+  getNoteDetails(note: Note) {
+    this.noteDetails = note
+  }
+  updateNote(note: Note) {
+    const { value } = this.editForm;
 
-  updateNote(note: Note)
-  {
-    const {value} = this.editForm
-    console.log(value);
+    this.noteObj.id = note.id;
+    this.noteObj.note_title = value.edited_title;
+    this.noteObj.note_description = value.edited_description;
+
+    this.note_service.updateNote(note, this.noteObj).then(() => {
+      alert('Note Updated Successfully');
+    });
+    this.editForm.reset();
+    console.log(this.noteDetails);
   }
 }
