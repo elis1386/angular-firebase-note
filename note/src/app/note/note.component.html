@@ -1,0 +1,83 @@
+<main class="container">
+
+
+  <button type="button" class="btn btn-primary my-3" data-bs-toggle="modal" data-bs-target="#addNotesModal">Create a new note</button>
+
+  <section class="row">
+    <article class="col-md-4" *ngFor="let note of notes">
+      <article class="card card-body">
+        <h5>{{note.note_title}}</h5>
+        <p class="text-muted">
+          {{note.note_description}}
+        </p>
+        <figure class="d-flex lign-items-center">
+          <span class="mx-2">
+            <i class="bi bi-pen" data-bs-toggle="modal" data-bs-target="#editNotesModal"></i>
+          </span>
+          <span class="mx-2">
+            <i class="bi bi-trash" (click)="deleteNote(note)"></i>
+          </span>
+        </figure>
+      </article>
+    </article>
+  </section>
+
+
+
+<!-- Modal from bootstrap for create a new note -->
+  <div class="modal fade" id="addNotesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">New note</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="noteForm">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Note title:</label>
+              <input type="text" class="form-control" id="recipient-name" formControlName="title">
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Description:</label>
+              <textarea class="form-control" id="message-text" formControlName="description"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary"(click)="addNote()" [disabled]="noteForm.invalid">Add new note</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit modal -->
+  <div class="modal fade" id="editNotesModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Your note</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="editForm">
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Note title:</label>
+              <input type="text" class="form-control" id="recipient-name" formControlName="edited_title">
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Description:</label>
+              <textarea class="form-control" id="message-text" formControlName="edited_description"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="updateNote(notes)">Update note</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
