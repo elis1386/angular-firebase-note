@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Note } from '../note';
 import { NoteService } from '../note.service';
-import { NgxSpinnerService} from 'ngx-spinner';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-note',
@@ -13,7 +13,7 @@ export class NoteComponent implements OnInit {
   noteForm!: FormGroup;
   editForm!: FormGroup;
   notes: any = [];
-  noteDetails: any
+  noteDetails: any;
   noteObj: Note = {
     id: '',
     note_title: '',
@@ -37,6 +37,7 @@ export class NoteComponent implements OnInit {
     this.getAllNotes();
   }
 
+
   addNote() {
     const { value } = this.noteForm;
     console.log(value);
@@ -47,18 +48,17 @@ export class NoteComponent implements OnInit {
 
     this.note_service.addNote(this.noteObj).then((note) => {
       if (note) {
-        alert('Note added successfully');
         this.noteForm.reset();
       }
     });
   }
 
   getAllNotes() {
-    this.spinner.show()
+    this.spinner.show();
     this.note_service.getNotes().subscribe((res: Note[]) => {
       console.log(res);
       this.notes = res;
-      this.spinner.hide()
+      this.spinner.hide();
     });
   }
   deleteNote(note: Note) {
@@ -68,7 +68,7 @@ export class NoteComponent implements OnInit {
     }
   }
   getNoteDetails(note: Note) {
-    this.noteDetails = note
+    this.noteDetails = note;
   }
   updateNote(note: Note) {
     const { value } = this.editForm;
@@ -77,9 +77,7 @@ export class NoteComponent implements OnInit {
     this.noteObj.note_title = value.edited_title;
     this.noteObj.note_description = value.edited_description;
 
-    this.note_service.updateNote(note, this.noteObj).then(() => {
-      alert('Note Updated Successfully');
-    });
+    this.note_service.updateNote(note, this.noteObj).then(() => {});
     this.editForm.reset();
     console.log(this.noteDetails);
   }
